@@ -1,0 +1,8 @@
+#!/bin/sh
+
+
+rm /etc/init.d/rpiLcdDaemon
+ln -s /opt/rpiLcdDaemon/scripts/init.d/rpiLcdDaemon /etc/init.d/
+
+update-rc.d rpiLcdDaemon remove
+update-rc.d rpiLcdDaemon defaults

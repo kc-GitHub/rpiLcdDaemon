@@ -1,0 +1,81 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:		rpiLcdDaemon
+# Required-Start:
+# Required-Stop:
+# Default-Start:	S
+# Default-Stop:		0 1 6
+# Short-Description:	Initialize the LCD deamon
+# Description:		Initialize the LCD deamon
+### END INIT INFO
+# Author: Dirk Hoffmann <hoffmann@vmd-jena.de>, 2013
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+. /lib/lsb/init-functions
+
+DESC="RasperyPi LCD Daemon"
+NAME=rpiLcdDaemon
+SCRIPTNAME=/etc/init.d/rpiLcdDaemon
+DAEMON=/opt/rpiLcdDaemon/$NAME
+CLIENT=/opt/rpiLcdDaemon/client
+PORT=1234
+#DEBUG=DEBUG
+DEBUG=
+
+# Exit if the package is not installed
+[ -x "$DAEMON" ] || exit 5
+
+case "$1" in
+	start)
+		log_daemon_msg "Starting $DESC " "rpiLcdDaemon" || true
+
+		start-stop-daemon --start --quiet --background --exec $DAEMON -- $PORT $DEBUG
+
+		status=$?
+		log_end_msg $status
+		;;
+
+	stop)
+		log_daemon_msg "Stoppting $DESC " "rpiLcdDaemon" || true
+
+		$SCRIPTNAME displayShutdownScreen
+		sleep 1
+
+		$CLIENT $PORT "shutdown"
+		log_end_msg $?
+		;;
+
+	restart)
+		shift
+		$0 stop ${@}
+		sleep 1
+		$0 start ${@}
+		;;
+
+	displayShutdownScreen)
+		$CLIENT $PORT stopDate										> /dev/null;
+		$CLIENT $PORT stopTime										> /dev/null;
+		$CLIENT $PORT cls > /dev/null
+		$CLIENT $PORT setBacklight,100								> /dev/null
+		$CLIENT $PORT setContrast,6									> /dev/null;
+
+		$CLIENT $PORT bmp,0,0,/opt/rpiLcdDaemon/images/fhem.bmp		> /dev/null;
+
+		$CLIENT $PORT setFont,0										> /dev/null;
+		$CLIENT $PORT text,76,2,Home,0,1							> /dev/null;
+		$CLIENT $PORT text,60,12,Automation,0,1						> /dev/null;
+		$CLIENT $PORT text,70,22,Server,0,1							> /dev/null;
+
+		$CLIENT $PORT setFont,1										> /dev/null;
+		$CLIENT $PORT text,50,34,shutting,0,1						> /dev/null;
+		$CLIENT $PORT text,74,46,down...,0,0						> /dev/null;
+		;;
+		
+	*)
+		echo "Usage: $SCRIPTNAME {start|stop|restart|displayShutdownScreen}" >&2
+		exit 2
+		;;
+esac
+
+:
