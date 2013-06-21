@@ -541,9 +541,9 @@ sub menuShutdown() {
 
 	lcd_contentClear($hash);
 	rpiLCD_command($hash, 'setFont,1');
-	rpiLCD_command($hash, 'text,23,25,"Shutdown",0,1');
+	rpiLCD_command($hash, 'text,23,25,Shutdown,0,1');
 	
-	`/sbin/halt`;
+	`sudo /sbin/halt`;
 }
 
 1;
