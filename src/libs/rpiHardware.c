@@ -235,7 +235,7 @@ void btn_Handler(void) {
 		if (!btnLeft && !btnCenter && !btnRight) {
 			cmd_cls();
 			cmd_setFont(1);
-			cmd_text(23, 25, "Reboot now", 0, 1);
+			cmd_text(23, 25, "Shutdown now", 0, 1);
 			syslogInfo ("Shutdown keys pressed. Initiating shutdown");
 			system("/sbin/halt");
 		}
@@ -301,11 +301,24 @@ void setLed(char led, char status) {
 /**
  * Let sleep the program for some ms
  *
- * Parameter:	uint32	ms		Number milli seconds to sleep
+ * Parameter:	uint32	ms		Number milliseconds to sleep
  * Return:		void
  */
 void rpiHW_sleep(uint32 ms) {
 	delay(ms);
+}
+
+/**
+ * wait some cpu cycles
+ *
+ * Parameter:	void
+ * Return:		void
+ */
+void rpiHW_spiWait(void) {
+	int i;
+	for(i = 0; i < 10; i++) {
+		asm("NOP;");
+	}
 }
 
 /**
@@ -322,8 +335,7 @@ void rpiHW_spiPutc(unsigned char byteToSend) {
 	for(i = 0; i < 8; i++) {
 
 		ripHW_lcd_sclkClear;
-		asm("NOP;");
-		asm("NOP;");
+		rpiHW_spiWait();
 
 		if(byteToSend & 0x80) {
 			ripHW_lcd_mosiSet;
@@ -332,11 +344,9 @@ void rpiHW_spiPutc(unsigned char byteToSend) {
 		}
 
 		byteToSend <<= 1;
-		asm("NOP;");
-		asm("NOP;");
+		rpiHW_spiWait();
 
 		ripHW_lcd_sclkSet;
-		asm("NOP;");
-		asm("NOP;");
+		rpiHW_spiWait();
 	}
 }
