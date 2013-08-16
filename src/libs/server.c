@@ -85,13 +85,17 @@ void startServer(int portNum) {
 	//Create socket
 	sockFD = socket(AF_INET, SOCK_STREAM, 0);
 
-	int val = 1;
-	if (setsockopt(sockFD, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val)) == -1) {
-		error("Setsockopt: %s", strerror (errno));
-	}
-
 	if (sockFD < 0) {
 		error("Could not create socket: %s", strerror (errno));
+	}
+
+
+	// no TIME_WAIT of socket connection
+	struct linger so_linger;
+	so_linger.l_onoff = 1;
+	so_linger.l_linger = 0;
+	if (setsockopt(sockFD, SOL_SOCKET, SO_LINGER, &so_linger, sizeof so_linger)) {
+		error("Setsockopt: %s", strerror (errno));
 	}
 
 	syslogDebug ("Socket created.");
@@ -164,7 +168,6 @@ void *connection_Handler(void *clientSock) {
 	int i;
 	int exit = 0;
 
-
 	// Send Greeting
 	message = "RaspberryPi LCD deamon\n";
 	write(sock , message , strlen(message));
@@ -218,14 +221,16 @@ void *connection_Handler(void *clientSock) {
 	}
 
 	if(readSize == 0 || exit || doShutdown) {
-		fflush(stdout);
 		syslogInfo("%i: Client (%s) disconnected", sock, inet_ntoa(addr.sin_addr));
+		fflush(stdout);
 
 	} else if(readSize == -1) {
 		syslogInfo("%i: Client (%s) connection is lost unexpectedly.", sock, inet_ntoa(addr.sin_addr));
 	}
 
 	close(sock);
+	free (clientSock);
+
 	if (sock == firstClient) {
 		firstClient = 0;
 	}
