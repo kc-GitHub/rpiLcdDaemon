@@ -130,8 +130,11 @@ void startServer(int portNum) {
 		}
 
 		if( pthread_create( &sniffer_thread , NULL , connection_Handler , (void*) clientSocket) < 0) {
-			error("%i: Could not create thread: %s", clientSocketFD, strerror (errno));
+			close(sockFD);
+			syslogWarning("%i: Could not create thread: %s", clientSocketFD, strerror (errno));
 		}
+
+		pthread_join(sniffer_thread, NULL);
 	}
 
 	if (clientSocketFD < 0) {
