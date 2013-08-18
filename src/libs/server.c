@@ -85,8 +85,14 @@ void startServer(int portNum) {
 	//Create socket
 	sockFD = socket(AF_INET, SOCK_STREAM, 0);
 
+
 	if (sockFD < 0) {
 		error("Could not create socket: %s", strerror (errno));
+	}
+
+	int val = 1;
+	if (setsockopt(sockFD, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val)) == -1) {
+		error("Setsockopt: %s", strerror (errno));
 	}
 
 
@@ -117,6 +123,12 @@ void startServer(int portNum) {
 
 	clientLen = sizeof(struct sockaddr_in);
 
+	pthread_attr_t tattr;
+
+	/* initialized with default attributes */
+	pthread_attr_init(&tattr);
+	pthread_attr_setdetachstate(&tattr,PTHREAD_CREATE_DETACHED);
+
 	while( (clientSocketFD = accept(sockFD, (struct sockaddr *) &client, (socklen_t*)&clientLen)) ) {
 
 		pthread_t sniffer_thread;
@@ -129,12 +141,10 @@ void startServer(int portNum) {
 			syslogInfo("%i: This is the first client. It received the key events.", firstClient );
 		}
 
-		if( pthread_create( &sniffer_thread , NULL , connection_Handler , (void*) clientSocket) < 0) {
+		if( pthread_create( &sniffer_thread , &tattr , connection_Handler , (void*) clientSocket) < 0) {
 			close(sockFD);
 			syslogWarning("%i: Could not create thread: %s", clientSocketFD, strerror (errno));
 		}
-
-		pthread_join(sniffer_thread, NULL);
 	}
 
 	if (clientSocketFD < 0) {

@@ -45,4 +45,3 @@ void *connection_Handler(void *sockFD);
 
 int firstClient;
 int doShutdown;
-

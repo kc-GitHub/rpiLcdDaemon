@@ -67,14 +67,15 @@ int debug = 0;
 char **textSplit(char *text, char *delims, int *elementCount) {
 	char **retVal = NULL;
 	char *ptr;
+	char *rest; // to point to the rest of the string after token extraction.
 
-	ptr = (char *) strtok(text, delims);
+	ptr = (char *) strtok_r(text, delims, &rest);
 	while(ptr != NULL) {
 		retVal = (char **)realloc(retVal, ((*elementCount) + 1) * sizeof(char *));
 		retVal[(*elementCount)++] = strdup(ptr);
 
 		// set pointer to next secion
-	 	ptr = strtok(NULL, delims);
+	 	ptr = strtok_r(NULL, delims, &rest	);
 	}
 
 	return retVal;

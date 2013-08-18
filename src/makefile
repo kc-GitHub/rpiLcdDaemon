@@ -13,7 +13,7 @@ OBJ = rpiLcdDaemon.o libs/lcd.o libs/utility.o libs/server.o libs/command.o libs
 BIN = rpiLcdDaemon
 
 daemon: $(OBJ)
-	$(CC) $(CFLAGS) -o $(BIN) $(OBJ) $(LDFLAGS)
+	$(CC) $(CFLAGS) -D_REENTRANT -o $(BIN) $(OBJ) $(LDFLAGS) -lpthread
 
 client: $(OBJ)
 	$(CC) $(CFLAGS) -o client client.c $(LDFLAGS)
