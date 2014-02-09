@@ -1,14 +1,5 @@
-//--------------------------------------------------------------------------------------------------
-//                                  _            _     
-//                                 | |          | |    
-//      ___ _ __ ___  ___ _   _ ___| |_ ___  ___| |__  
-//     / _ \ '_ ` _ \/ __| | | / __| __/ _ \/ __| '_ \. 
-//    |  __/ | | | | \__ \ |_| \__ \ ||  __/ (__| | | |
-//     \___|_| |_| |_|___/\__, |___/\__\___|\___|_| |_|
-//                         __/ |                       
-//                        |___/    Engineering (www.emsystech.de)
 //
-// Filename:    lcd.h
+// Filename:    lcd.c
 // Description: LCD graphic routines
 //    
 // Open Source Licensing 
@@ -23,19 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License along with this program.  
 // If not, see <http://www.gnu.org/licenses/>.
-//
-// Dieses Programm ist Freie Software: Sie k�nnen es unter den Bedingungen der GNU General Public
-// License, wie von der Free Software Foundation, Version 3 der Lizenz oder (nach Ihrer Option) 
-// jeder sp�teren ver�ffentlichten Version, weiterverbreiten und/oder modifizieren.
-//
-// Dieses Programm wird in der Hoffnung, dass es n�tzlich sein wird, aber OHNE JEDE GEW�HRLEISTUNG,
-// bereitgestellt; sogar ohne die implizite Gew�hrleistung der MARKTF�HIGKEIT oder EIGNUNG F�R 
-// EINEN BESTIMMTEN ZWECK. Siehe die GNU General Public License f�r weitere Details.
-//
-// Sie sollten eine Kopie der GNU General Public License zusammen mit diesem Programm erhalten 
-// haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
 //                       
-// Author:      Martin Steppuhn
+// Author:      Martin Steppuhn, www.emsystech.de
 // History:     05.11.2012 Initial version V0.9.0
 //
 //              Dirk Hoffmann <hoffmann@vmd-jena.de>
@@ -50,9 +30,6 @@
 	//=== Preprocessing directives (#define) ===========================================================
 	#define		LCD_WIDTH		128
 	#define		LCD_HEIGHT		64
-
-	//#define		LCD_X_OFFSET	4		// Pixel Offset
-	#define		LCD_X_OFFSET	0		// Pixel Offset
 
 	//=== Type definitions (typedef) ===================================================================
 

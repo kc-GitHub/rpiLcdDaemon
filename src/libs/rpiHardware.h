@@ -3,7 +3,7 @@
  *
  * Filename:    rpiHardware.h
  * Description: Hardware related methodes for Raspberry Pi
- * Author:      Dirk Hoffmann <hoffmann@vmd-jena.de> 2013
+ * Author:      Dirk Hoffmann <hoffmann@vmd-jena.de> 2013-2014
  *
  *******************************************************************************
  * Open Source Licensing
@@ -20,23 +20,6 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * Dieses Programm ist Freie Software: Sie k�nnen es unter den Bedingungen der
- * GNU General Public License, wie von der Free Software Foundation, Version 3
- * der Lizenz oder (nach Ihrer Option) jeder späteren veröffentlichten Version,
- * weiterverbreiten und/oder modifizieren.
- *
- * Dieses Programm wird veröffentlicht in der Hoffnung, dass es nützlich sein
- * wird, aber OHNE JEDE GEWÄHRLEISTUNG; sogar ohne die implizite Gewährleistung
- * der MARKTFÄHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Siehe die GNU
- * General Public License f�r weitere Details.
- *
- * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
- * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
- *******************************************************************************
- *
- * History:     25.05.2013 Initial version V0.0.1
- *
  *******************************************************************************/
 
 #ifndef RPIHARDWARE_H
@@ -68,20 +51,20 @@
 	#define PIN_LCD_SCLK      14	// 11
 
 	// define macros
-	#define	ripHW_lcd_rstClear  digitalWrite(PIN_LCD_RST, 0);
-	#define	ripHW_lcd_rstSet    digitalWrite(PIN_LCD_RST, 1);
+	#define	rpiHW_lcd_rstClear  digitalWrite(PIN_LCD_RST, 0);
+	#define	rpiHW_lcd_rstSet    digitalWrite(PIN_LCD_RST, 1);
 
-	#define	ripHW_lcd_csClear   digitalWrite(PIN_LCD_CS, 0);
-	#define	ripHW_lcd_csSet     digitalWrite(PIN_LCD_CS, 1);
+	#define	rpiHW_lcd_csClear   digitalWrite(PIN_LCD_CS, 0);
+	#define	rpiHW_lcd_csSet     digitalWrite(PIN_LCD_CS, 1);
 
-	#define	ripHW_lcd_rsClear   digitalWrite(PIN_LCD_RS, 0);
-	#define	ripHW_lcd_rsSet     digitalWrite(PIN_LCD_RS, 1);
+	#define	rpiHW_lcd_rsClear   digitalWrite(PIN_LCD_RS, 0);
+	#define	rpiHW_lcd_rsSet     digitalWrite(PIN_LCD_RS, 1);
 
-	#define	ripHW_lcd_mosiClear digitalWrite(PIN_LCD_MOSI, 0);
-	#define	ripHW_lcd_mosiSet   digitalWrite(PIN_LCD_MOSI, 1);
+	#define	rpiHW_lcd_mosiClear digitalWrite(PIN_LCD_MOSI, 0);
+	#define	rpiHW_lcd_mosiSet   digitalWrite(PIN_LCD_MOSI, 1);
 
-	#define	ripHW_lcd_sclkClear digitalWrite(PIN_LCD_SCLK, 0);
-	#define	ripHW_lcd_sclkSet   digitalWrite(PIN_LCD_SCLK, 1);
+	#define	rpiHW_lcd_sclkClear digitalWrite(PIN_LCD_SCLK, 0);
+	#define	rpiHW_lcd_sclkSet   digitalWrite(PIN_LCD_SCLK, 1);
 
 	#define RPIHARDWARE_H
 

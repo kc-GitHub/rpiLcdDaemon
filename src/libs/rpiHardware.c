@@ -3,7 +3,7 @@
  *
  * Filename:    rpiHardware.c
  * Description: Hardware related methodes for Raspberry Pi
- * Author:      Dirk Hoffmann <hoffmann@vmd-jena.de> 2013
+ * Author:      Dirk Hoffmann <hoffmann@vmd-jena.de> 2013-2014
  *
  *******************************************************************************
  * Open Source Licensing
@@ -20,23 +20,6 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * Dieses Programm ist Freie Software: Sie können es unter den Bedingungen der
- * GNU General Public License, wie von der Free Software Foundation, Version 3
- * der Lizenz oder (nach Ihrer Option) jeder späteren veröffentlichten Version,
- * weiterverbreiten und/oder modifizieren.
- *
- * Dieses Programm wird veröffentlicht in der Hoffnung, dass es nützlich sein
- * wird, aber OHNE JEDE GEWÄHRLEISTUNG; sogar ohne die implizite Gewährleistung
- * der MARKTFÄHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Siehe die GNU
- * General Public License für weitere Details.
- *
- * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
- * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
- *******************************************************************************
- *
- * History:     25.05.2013 Initial version V0.0.1
- *
  *******************************************************************************/
 
 //=== Includes =================================================================
@@ -331,22 +314,22 @@ void rpiHW_spiWait(void) {
 void rpiHW_spiPutc(unsigned char byteToSend) {
 	int i; //,n;
 
-	ripHW_lcd_sclkClear;
+	rpiHW_lcd_sclkClear;
 	for(i = 0; i < 8; i++) {
 
-		ripHW_lcd_sclkClear;
+		rpiHW_lcd_sclkClear;
 		rpiHW_spiWait();
 
 		if(byteToSend & 0x80) {
-			ripHW_lcd_mosiSet;
+			rpiHW_lcd_mosiSet;
 		} else {
-			ripHW_lcd_mosiClear;
+			rpiHW_lcd_mosiClear;
 		}
 
 		byteToSend <<= 1;
 		rpiHW_spiWait();
 
-		ripHW_lcd_sclkSet;
+		rpiHW_lcd_sclkSet;
 		rpiHW_spiWait();
 	}
 }

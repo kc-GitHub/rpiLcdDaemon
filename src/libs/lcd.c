@@ -1,12 +1,3 @@
-//--------------------------------------------------------------------------------------------------
-//                                  _            _     
-//                                 | |          | |    
-//      ___ _ __ ___  ___ _   _ ___| |_ ___  ___| |__  
-//     / _ \ '_ ` _ \/ __| | | / __| __/ _ \/ __| '_ \. 
-//    |  __/ | | | | \__ \ |_| \__ \ ||  __/ (__| | | |
-//     \___|_| |_| |_|___/\__, |___/\__\___|\___|_| |_|
-//                         __/ |                       
-//                        |___/    Engineering (www.emsystech.de)
 //
 // Filename:    lcd.c
 // Description: LCD graphic routines
@@ -23,23 +14,13 @@
 //
 // You should have received a copy of the GNU General Public License along with this program.  
 // If not, see <http://www.gnu.org/licenses/>.
-//
-// Dieses Programm ist Freie Software: Sie k�nnen es unter den Bedingungen der GNU General Public
-// License, wie von der Free Software Foundation, Version 3 der Lizenz oder (nach Ihrer Option) 
-// jeder sp�teren ver�ffentlichten Version, weiterverbreiten und/oder modifizieren.
-//
-// Dieses Programm wird in der Hoffnung, dass es n�tzlich sein wird, aber OHNE JEDE GEW�HRLEISTUNG,
-// bereitgestellt; sogar ohne die implizite Gew�hrleistung der MARKTF�HIGKEIT oder EIGNUNG F�R 
-// EINEN BESTIMMTEN ZWECK. Siehe die GNU General Public License f�r weitere Details.
-//
-// Sie sollten eine Kopie der GNU General Public License zusammen mit diesem Programm erhalten 
-// haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
 //                       
-// Author:      Martin Steppuhn
+// Author:      Martin Steppuhn, www.emsystech.de
 // History:     05.11.2012 Initial version V0.9.0
 //
 //              Dirk Hoffmann <hoffmann@vmd-jena.de>
 //              25.05.2013 Some changes for use with the rpiLcdDaemon
+//              02.09.2014 switch for rotate the display by 180 degree
 //--------------------------------------------------------------------------------------------------
 
 //=== Includes =====================================================================================
@@ -65,6 +46,8 @@ uint8	framebuffer[LCD_WIDTH][LCD_HEIGHT/8];
 uint8	PenColor;
 uint8	FillColor;
 uint8	FontNumber;
+uint8	LCD_xOffset;
+
 
 /**
  * Set pen color
@@ -473,36 +456,38 @@ void LCD_SetContrast(uint8 contrast) {
  */
 void LCD_Init(void) {
 	// Reset LCD-Display
-	ripHW_lcd_rstClear;
+	rpiHW_lcd_rstClear;
 	rpiHW_sleep(50);		// Wait 200ms
 
-	ripHW_lcd_rstSet;
+	rpiHW_lcd_rstSet;
 	rpiHW_sleep(200);		// Wait 200ms
 
 	lcd_write_cmd(0xE2);	// Reset
 	lcd_write_cmd(0x40);	// Set display start line (00)
 //	lcd_write_cmd(0x5E);	// Set display start line (30)
-	lcd_write_cmd(0xA0);	// ADC select
 
 	if (lcdFlip == 1) {
-		lcd_write_cmd(0xC0);	// Output status select segister (C0: rotate the display by 180 degrees)
+		lcd_write_cmd(0xA1);	// ADC reset (display mirror horizontal)
+		lcd_write_cmd(0xC0);	// Output status select register (display mirror vertical)
+		LCD_xOffset = 4;
 	} else {
-		lcd_write_cmd(0xC8);	// Output status select register (C8 normal normal display orientation)
+		lcd_write_cmd(0xA0);	// ADC set (display normal horizontal)
+		lcd_write_cmd(0xC8);	// Output status select register (display normal vertical)
+		LCD_xOffset = 0;
 	}
 
-	lcd_write_cmd(0xA4);	// Entire display on
-	lcd_write_cmd(0xA6);	// Normal / reverse display (A7: reverse)
-	lcd_write_cmd(0xA2);	// Set LCD bias
-	lcd_write_cmd(0x2F);	// Set power control
-	lcd_write_cmd(0x27);	// V0 voltage regulator internal resistor ratio Set
+	lcd_write_cmd(0xA4);	// Entire display off (A5: entire display on)
+	lcd_write_cmd(0xA6);	// Normal / invert display (A7: invert)
+	lcd_write_cmd(0xA2);	// reset LCD bias (A3: set bias)
+	lcd_write_cmd(0x2F);	// Set power control ???
+	lcd_write_cmd(0x27);	// V0 voltage regulator internal resistor ratio Set ???
 	
-	lcd_write_cmd(0x81);	// The electronic volume mode set
-	lcd_write_cmd(8);		// Electronic volume register set
+	lcd_write_cmd(0x81);	// The electronic volume mode set ???
+	lcd_write_cmd(8);		// Electronic volume register set ???
 
-	lcd_write_cmd(0xFA);	// Test mode reset
-	lcd_write_cmd(0x98);
-
-	lcd_write_cmd(0xAF);	// Turns display on
+//	lcd_write_cmd(0xFA);	// Test mode reset ???
+//	lcd_write_cmd(0x90); //???
+	lcd_write_cmd(0xAF);	// Turns display on (AE: display off)
 
 	LCD_ClearScreen();
 }
@@ -514,10 +499,10 @@ void LCD_Init(void) {
  * Return:		void
  */
 void lcd_write_cmd(uint8 d) {
-	ripHW_lcd_csClear;
-	ripHW_lcd_rsClear;			// Command Mode
+	rpiHW_lcd_csClear;
+	rpiHW_lcd_rsClear;			// Command Mode
 	rpiHW_spiPutc(d);
-	ripHW_lcd_csSet;
+	rpiHW_lcd_csSet;
 }
 
 /**
@@ -527,10 +512,10 @@ void lcd_write_cmd(uint8 d) {
  * Return:		void
  */
 void lcd_write_data(uint8 d) {
-	ripHW_lcd_csClear;
-	ripHW_lcd_rsSet;			// Data Mode
+	rpiHW_lcd_csClear;
+	rpiHW_lcd_rsSet;			// Data Mode
 	rpiHW_spiPutc(d);
-	ripHW_lcd_csSet;
+	rpiHW_lcd_csSet;
 }
 
 /**
@@ -540,7 +525,7 @@ void lcd_write_data(uint8 d) {
  * Return:		void
  */
 void lcd_set_xy(uint8 x,uint8 ypage) {
-	x += LCD_X_OFFSET;
+	x += LCD_xOffset;
 	lcd_write_cmd(0x00 + (x & 0x0F));
 	lcd_write_cmd(0x10 + ((x>>4) & 0x0F));
 	lcd_write_cmd(0xB0 + (ypage & 0x07));

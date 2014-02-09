@@ -8,7 +8,7 @@
 # Short-Description:	Initialize the LCD deamon
 # Description:		Initialize the LCD deamon
 ### END INIT INFO
-# Author: Dirk Hoffmann <hoffmann@vmd-jena.de>, 2013
+# Author: Dirk Hoffmann <hoffmann@vmd-jena.de>, 2013-2014
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 

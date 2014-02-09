@@ -3,7 +3,7 @@
  *
  * Filename:    command.c
  * Description: Controller for dispatching commands received via socket connection
- * Author:      Dirk Hoffmann <hoffmann@vmd-jena.de> 2013
+ * Author:      Dirk Hoffmann <hoffmann@vmd-jena.de> 2013-2014
  *
  *******************************************************************************
  * Open Source Licensing
@@ -20,23 +20,6 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * Dieses Programm ist Freie Software: Sie k�nnen es unter den Bedingungen der
- * GNU General Public License, wie von der Free Software Foundation, Version 3
- * der Lizenz oder (nach Ihrer Option) jeder späteren veröffentlichten Version,
- * weiterverbreiten und/oder modifizieren.
- *
- * Dieses Programm wird veröffentlicht in der Hoffnung, dass es nützlich sein
- * wird, aber OHNE JEDE GEWÄHRLEISTUNG; sogar ohne die implizite Gewährleistung
- * der MARKTFÄHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Siehe die GNU
- * General Public License f�r weitere Details.
- *
- * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
- * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
- *******************************************************************************
- *
- * History:     25.05.2013 Initial version V0.0.1
- *
  *******************************************************************************/
 
 //=== Includes =================================================================
