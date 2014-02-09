@@ -108,7 +108,11 @@ void startServer(int portNum) {
 
 	//Prepare the sockaddr_in structure
 	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);							// accept connections from loopback address only
+
+	if (allowRemote != 1) {
+		server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);						// accept connections from loopback address only
+	}
+
 	server.sin_port = htons(portNum);
 
 	// bind

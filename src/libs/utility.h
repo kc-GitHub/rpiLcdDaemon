@@ -55,3 +55,4 @@ void error(char *string, ...);
 void syslogDebug(char *string, ...);
 void syslogInfo(char *string, ...);
 void syslogWarning(char *string, ...);
+int isnumeric(char *str);

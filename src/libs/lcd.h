@@ -59,7 +59,8 @@
 	//=== Global constants (extern) ====================================================================
 
 	//=== Global variables (extern) ====================================================================
-	uint8	framebufferShouldRefresh;
+	uint8 framebufferShouldRefresh;
+	uint8 lcdFlip;
 
 	//=== Global function prototypes ===================================================================
 

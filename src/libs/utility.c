@@ -179,3 +179,14 @@ void syslogWarning(char *string, ...) {
 
 	syslog (LOG_WARNING, "%i: WARNING: %s", getpid(), buffer);
 }
+
+int isnumeric(char *str) {
+	while(*str) {
+		if(!isdigit(*str)) {
+			return 0;
+		}
+		str++;
+	}
+
+	return 1;
+}

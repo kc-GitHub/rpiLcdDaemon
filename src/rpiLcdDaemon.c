@@ -53,6 +53,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include <pthread.h>
 
@@ -68,6 +69,8 @@
 
 #include "rpiLcdDaemon.h"
 
+#define VERSION 0.4
+
 //==============================================================================
 
 /**
@@ -79,21 +82,56 @@
  * Return:		int
  */
 int main(int argc, char *argv[]) {
-	char printUsage = (argc < 2) ? 1 : 0;
+	char printUsage = (argc < 2) || !isnumeric(argv[1]) ? 1 : 0;
+	debug = 0;
+	lcdFlip = 0;
+	allowRemote = 0;
 
-	if ( (argv[2] != NULL) && (!printUsage) ) {
-		if (strcmp(argv[2], "DEBUG") == 0) {
-			debug = 1;
-			static char *debugInfo = "Start with DEBUG-INFO";
-			syslogDebug(debugInfo);
-			printf("%s \n", debugInfo);
-		} else {
+	printf("rpiLcdDaemon Version %.1f\n", VERSION);
+
+	uint8 validParamCount = 0;
+	if ( (argv[2] != NULL) && !printUsage ) {
+		uint8 i;
+		for(i = 1; i < argc; i++) {
+			if (strcmp(argv[i], "DEBUG") == 0) {
+				debug = 1;
+				validParamCount++;
+
+			} else if (strcmp(argv[i], "lcdFlip") == 0) {
+				lcdFlip = 1;
+				validParamCount++;
+
+			} else if (strcmp(argv[i], "allowRemoteConnect") == 0) {
+				allowRemote = 1;
+				validParamCount++;
+			}
+		}
+
+		if (validParamCount != (argc -2)) {
 			printUsage = 1;
 		}
 	}
 
 	if (printUsage) {
-		error ("Usage: %s <portNum> [DEBUG]", argv[0]);
+		error ("Usage: %s <portNum> [allowRemoteConnect] [lcdFlip] [DEBUG]", argv[0]);
+	}
+
+	if (debug == 1) {
+		static char *debugInfo = "Start with DEBUG-INFO";
+		syslogDebug(debugInfo);
+		printf("%s \n", debugInfo);
+
+		if (lcdFlip == 1) {
+			static char *debugInfo = "LCD content is flipped";
+			syslogDebug(debugInfo);
+			printf("%s \n", debugInfo);
+		}
+
+		if (allowRemote == 1) {
+			static char *debugInfo = "Remote access is enabled";
+			syslogDebug(debugInfo);
+			printf("%s \n", debugInfo);
+		}
 	}
 
 	int portNum = atoi(argv[1]);

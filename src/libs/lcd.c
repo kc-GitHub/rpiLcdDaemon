@@ -480,24 +480,29 @@ void LCD_Init(void) {
 	rpiHW_sleep(200);		// Wait 200ms
 
 	lcd_write_cmd(0xE2);	// Reset
-	lcd_write_cmd(0x40);	// Set Display Start Line (00)
-//	lcd_write_cmd(0x5E);	// Set Display Start Line (30)
-	lcd_write_cmd(0xA0);	// ADC Select
+	lcd_write_cmd(0x40);	// Set display start line (00)
+//	lcd_write_cmd(0x5E);	// Set display start line (30)
+	lcd_write_cmd(0xA0);	// ADC select
 
-	lcd_write_cmd(0xC8);	// Output Status Select Register (C0 / C8 Rotate the Display)
-	lcd_write_cmd(0xA4);	// Entire Display on
-	lcd_write_cmd(0xA6);	// Normal/Reverse Display (A7 -> reverse)
-	lcd_write_cmd(0xA2);	// Set LCD Bias
-	lcd_write_cmd(0x2F);	// Set Power Control
-	lcd_write_cmd(0x27);	// V0 Voltage Regulator Internal Resistor Ratio Set
+	if (lcdFlip == 1) {
+		lcd_write_cmd(0xC0);	// Output status select segister (C0: rotate the display by 180 degrees)
+	} else {
+		lcd_write_cmd(0xC8);	// Output status select register (C8 normal normal display orientation)
+	}
+
+	lcd_write_cmd(0xA4);	// Entire display on
+	lcd_write_cmd(0xA6);	// Normal / reverse display (A7: reverse)
+	lcd_write_cmd(0xA2);	// Set LCD bias
+	lcd_write_cmd(0x2F);	// Set power control
+	lcd_write_cmd(0x27);	// V0 voltage regulator internal resistor ratio Set
 	
-	lcd_write_cmd(0x81);	// The Electronic Volume Mode Set
-	lcd_write_cmd(8);		// Electronic Volume Register Set
+	lcd_write_cmd(0x81);	// The electronic volume mode set
+	lcd_write_cmd(8);		// Electronic volume register set
 
-	lcd_write_cmd(0xFA);	// Test Mode Reset
+	lcd_write_cmd(0xFA);	// Test mode reset
 	lcd_write_cmd(0x98);
 
-	lcd_write_cmd(0xAF);	// Turns Display on
+	lcd_write_cmd(0xAF);	// Turns display on
 
 	LCD_ClearScreen();
 }
