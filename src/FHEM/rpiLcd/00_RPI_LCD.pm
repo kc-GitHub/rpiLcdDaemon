@@ -491,50 +491,52 @@ sub RPI_LCD_parseCommand($$) {
 		my $name = $hash->{NAME};
 
 		my ($txtBtnStatus, $txtBtnCounter) = split(", ", $command);
-		my (undef, $btnStatus) = split(": ", $txtBtnStatus);
-		my (undef, $btnCounter) = split(": ", $txtBtnCounter);
-
-		$btnStatus = 0 if (!defined($btnStatus));
-
-		RPI_LCD_processButtons($hash, $btnStatus);
-
-#		Log (1, 'Button pressed: ---------------------> ' . $btnStatus);
-		
-		my %readings = (
-			'BTN_LEFT'   => 'none',
-			'BTN_CENTER' => 'none',
-			'BTN_RIGHT'  => 'none'
-		);
-
-		$readings{'BTN_LEFT'} = 'Pressed' if ($btnStatus & 0b1);
-		$readings{'BTN_LEFT'}.= '_long'   if ($btnStatus & 0b10);
-
-		$readings{'BTN_CENTER'} = 'Pressed' if ($btnStatus &  0b100);
-		$readings{'BTN_CENTER'}.= '_long'   if ($btnStatus & 0b1000);
-
-		$readings{'BTN_RIGHT'} = 'Pressed' if ($btnStatus &  0b10000);
-		$readings{'BTN_RIGHT'}.= '_long'   if ($btnStatus & 0b100000);
-
-		my $timeNow = TimeNow();
-		foreach my $r (keys %readings) {
-			$hash->{READINGS}{$r}{TIME} = $timeNow;
-			$hash->{READINGS}{$r}{VAL} = $readings{$r};
+		if (defined($txtBtnStatus) && $txtBtnStatus && defined($txtBtnCounter) && $txtBtnCounter) {
+			my (undef, $btnStatus) = split(": ", $txtBtnStatus);
+			my (undef, $btnCounter) = split(": ", $txtBtnCounter);
+	
+			$btnStatus = 0 if (!defined($btnStatus));
+	
+			RPI_LCD_processButtons($hash, $btnStatus);
+	
+	#		Log (1, 'Button pressed: ---------------------> ' . $btnStatus);
+			
+			my %readings = (
+				'BTN_LEFT'   => 'none',
+				'BTN_CENTER' => 'none',
+				'BTN_RIGHT'  => 'none'
+			);
+	
+			$readings{'BTN_LEFT'} = 'Pressed' if ($btnStatus & 0b1);
+			$readings{'BTN_LEFT'}.= '_long'   if ($btnStatus & 0b10);
+	
+			$readings{'BTN_CENTER'} = 'Pressed' if ($btnStatus &  0b100);
+			$readings{'BTN_CENTER'}.= '_long'   if ($btnStatus & 0b1000);
+	
+			$readings{'BTN_RIGHT'} = 'Pressed' if ($btnStatus &  0b10000);
+			$readings{'BTN_RIGHT'}.= '_long'   if ($btnStatus & 0b100000);
+	
+			my $timeNow = TimeNow();
+			foreach my $r (keys %readings) {
+				$hash->{READINGS}{$r}{TIME} = $timeNow;
+				$hash->{READINGS}{$r}{VAL} = $readings{$r};
+			}
+	
+			my @btnStates;
+			push(@btnStates, 'BTN_LEFT: '   . $readings{'BTN_LEFT'})   if ($readings{'BTN_LEFT'} ne 'none');
+			push(@btnStates, 'BTN_CENTER: ' . $readings{'BTN_CENTER'}) if ($readings{'BTN_CENTER'} ne 'none');
+			push(@btnStates, 'BTN_RIGHT: '  . $readings{'BTN_RIGHT'})  if ($readings{'BTN_RIGHT'} ne 'none');
+	
+			my $state = join(' ', @btnStates);
+			$state = ($state ne '') ? $state : 'none';
+	
+			$hash->{CHANGED}[0] = $state;
+			$hash->{STATE} = $state;
+			$hash->{READINGS}{STATE}{VAL} = $state;
+			$hash->{READINGS}{STATE}{TIME} = $timeNow;
+	
+			DoTrigger($hash->{NAME}, undef);		
 		}
-
-		my @btnStates;
-		push(@btnStates, 'BTN_LEFT: '   . $readings{'BTN_LEFT'})   if ($readings{'BTN_LEFT'} ne 'none');
-		push(@btnStates, 'BTN_CENTER: ' . $readings{'BTN_CENTER'}) if ($readings{'BTN_CENTER'} ne 'none');
-		push(@btnStates, 'BTN_RIGHT: '  . $readings{'BTN_RIGHT'})  if ($readings{'BTN_RIGHT'} ne 'none');
-
-		my $state = join(' ', @btnStates);
-		$state = ($state ne '') ? $state : 'none';
-
-		$hash->{CHANGED}[0] = $state;
-		$hash->{STATE} = $state;
-		$hash->{READINGS}{STATE}{VAL} = $state;
-		$hash->{READINGS}{STATE}{TIME} = $timeNow;
-
-		DoTrigger($hash->{NAME}, undef);		
 	}
 }
 
