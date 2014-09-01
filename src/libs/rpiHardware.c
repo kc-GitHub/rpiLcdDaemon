@@ -316,7 +316,7 @@ void rpiHW_sleep(uint32 ms) {
  */
 void rpiHW_spiWait(void) {
 	int i;
-	for(i = 0; i < 25; i++) {
+	for(i = 0; i < 50; i++) {
 		asm("NOP;");
 	}
 }
